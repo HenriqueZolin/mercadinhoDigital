@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styleCarrinho.css">
+</head>
+
+<body>
+    <table id="tableCarrinho">
+        <tbody id="itensAdicionados">
+
+        </tbody>
+    </table>
+
+    <div id="valor">
+        <h3>Valor total: </h3><br>
+        <h3 id="valorTotal">R$ 00.00</h3>
+    </div>
+    <div id="informacoes">
+        <section class="container">
+            <header>Confirmar Dados</header>
+            <form class="form" action="#">
+                <div class="input-box">
+                    <label>Nome Completo</label>
+                    <input required="" placeholder="Nome Completo" type="text">
+                </div>
+                <div class="column">
+                    <div class="input-box">
+                      <label>Telefone</label>
+                      <input required="" placeholder="Número de celular" type="telephone">
+                    </div>
+                    <div class="input-box">
+                      <label>Data de Nascimento</label>
+                      <input required="" placeholder="Enter birth date" type="date">
+                    </div>
+                </div>
+                <div class="input-box address">
+                    <label>Forma de Pagamento</label>
+                    <div class="column">
+                      <div class="select-box">
+                        <select>
+                          <option hidden="">Forma de Pagamento</option>
+                          <option>PIX</option>
+                          <option>Cartão Visa</option>
+                          <option>Cartão MasterCard</option>
+                          <option>Boleto</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                <div class="input-box address">
+                  <label>Endereço</label>
+                  <input required="" placeholder="Endereço" type="text">
+                  <div class="column">
+                    <div class="select-box">
+                      <select>
+                        <option hidden="">País</option>
+                        <option>USA</option>
+                        <option>Brasil</option>
+                        <option>Uruguai</option>
+                        <option>Argentina</option>
+                      </select>
+                    </div>
+                  <input required="" placeholder="Sua cidade" type="text">
+                  </div>
+                </div>
+                <button>Finalizar</button>
+            </form>
+          </section>
+    </div>
+
+    <script>
+        let itensCarrinho = localStorage.getItem('carrinhoItens');
+        function adicionarItensCarrinho() {
+            const itensCarrinho = JSON.parse(localStorage.getItem('carrinhoItens'));
+            const tabelaItensComprados = document.getElementById('itensAdicionados');
+
+            itensCarrinho.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+        <td><img src="${item.urlImagem}" id='imagemComprada'></td>
+        <td id='itemCar'>${item.item}</td>
+        <td id='valorCar'>R$ ${item.valor}</td>
+        <td>
+            <button onclick="excluirCarrinho(this)" id="delete-button"><svg class="delete-svgIcon" viewBox="0 0 448 512">
+            <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
+            </svg></button>
+        </td>
+    `;
+                tabelaItensComprados.appendChild(tr);
+            });
+        }
+
+        function excluirCarrinho(button) {
+            let trPai = button.closest('tr'); // acesso ao tr pai do botão
+            trPai.remove(); // remove o tr pai do botão
+
+            let itensCarrinho = JSON.parse(localStorage.getItem('carrinhoItens'));
+            let itemToRemove = trPai.cells[1].textContent; // Get the item text from the table cell
+
+            // Find the index of the item to be removed
+            let index = itensCarrinho.findIndex(item => item.item === itemToRemove);
+
+            if (index !== -1) {
+                itensCarrinho.splice(index, 1); // Remove the item from the array
+                localStorage.setItem('carrinhoItens', JSON.stringify(itensCarrinho)); // Update the localStorage
+            }
+            calcularTotal();
+        }
+
+        function calcularTotal() {
+            let total = 0;
+            const valorCars = document.querySelectorAll('#valorCar');
+            valorCars.forEach((valorCar) => {
+                const valor = parseFloat(valorCar.textContent.replace('R$ ', ''));
+                total += valor;
+            });
+            document.getElementById('valorTotal').innerHTML = 'R$' + total.toFixed(2);
+        }
+
+        adicionarItensCarrinho();
+        calcularTotal();
+    </script>
+</body>
+
+</html>
