@@ -122,6 +122,7 @@ function atualizarValorTotal() {
 function excluir(indice) {
     if (confirm(`Tem certeza que deseja excluir o item ${listaDeCompras[indice].item}?`)) {
         listaDeCompras.splice(indice, 1);
+        salvarLista();
         read();
     }
 }

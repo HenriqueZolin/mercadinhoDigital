@@ -27,7 +27,6 @@ function realizarLogin() {
             localStorage.setItem("token", token);
             modal.close();
         }
-
     } else {
         document.getElementById('respostaLogin').innerHTML = "Preencha todos os campos";
     }
